@@ -11,14 +11,17 @@
 #include "util/utils.h"
 #include "drive_type.h"
 #include "device_type.h"
+#include "stream_api.h"
+#include "status.h"
 //
 namespace core {
 
 class ISignal;
 class IMemoryRegion;
 class ICache;
+class IQueue;
 
-typedef void (*HsaEventCallback)(status_t status, queue_t* source,
+typedef void (*HsaEventCallback)(status_t status, IQueue* source,
     void* data);
 
 // Agent is intended to be an pure interface class and may be wrapped or
@@ -262,6 +265,8 @@ protected:
         return SUCCESS;
     }
 
+    core::IRuntime* GetRuntime() {return runtime_;}
+
     //  agent_t public_handle_;
 
 private:
@@ -272,8 +277,11 @@ private:
 
     bool profiling_enabled_;
 
+    core::IRuntime* runtime_;
+
     // Forbid copying and moving of this object
     DISALLOW_COPY_AND_ASSIGN(IAgent);
+    friend class IMemoryRegion;
 };
 
 }
